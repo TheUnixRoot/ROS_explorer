@@ -126,47 +126,47 @@ int main(int argc, char** argv)
     auto r_it_1{ g_laser.ranges.begin() };
     auto r_it_2{ g_laser.ranges.begin() };
     std::advance(r_it_2, 1);
-    ROS_INFO("[robot_explorer] Looping for right edges...");
+    // ROS_INFO("[robot_explorer] Looping for right edges...");
     while ((*r_it_2 - *r_it_1) < THRESHOLD and std::distance(r_it_2, g_laser.ranges.end()) > 0)
     {
       std::advance(r_it_2, 1);
       std::advance(r_it_1, 1);
     }
     bool right_edge{ (*r_it_2 - *r_it_1) >= THRESHOLD and *r_it_1 < THRESHOLD * 2 };
-    ROS_INFO("[robot_explorer] Looped ---------");
+    // ROS_INFO("[robot_explorer] Looped ---------");
 
     // ### Left edge
     auto l_it_1{ g_laser.ranges.end() };
     auto l_it_2{ g_laser.ranges.end() };
     std::advance(l_it_2, 1);
-    ROS_INFO("[robot_explorer] Looping for left edges...");
+    // ROS_INFO("[robot_explorer] Looping for left edges...");
     while ((*l_it_1 - *l_it_2) < THRESHOLD and std::distance(l_it_2, g_laser.ranges.end()) > 0)
     {
       std::advance(r_it_2, 1);
       std::advance(r_it_1, 1);
     }
     bool left_edge{ (*l_it_1 - *l_it_2) >= THRESHOLD and *r_it_1 < THRESHOLD * 2 };
-    ROS_INFO("[robot_explorer] Looped ---------");
+    // ROS_INFO("[robot_explorer] Looped ---------");
 
     // ## Edge behaviour ----------------
-    if (right_edge or left_edge)
-    {
-      ROS_INFO("[robot_explorer] --------- Edge find ---------");
-      float omega_sign;
-      if (right_edge && (omega_sign = degreeOfPoint(r_it_2)) < 0)
-      {
-        omega_sign = -1;
-      }
-      else if (left_edge && (omega_sign = degreeOfPoint(l_it_2)) < 0)
-      {
-        omega_sign = -1;
-      }
-      else
-      {
-        omega_sign = 1;
-      }
-      msg.angular.z = 0.25 * omega_sign;
-    }
+    //    if (right_edge or left_edge)
+    //    {
+    //      ROS_INFO("[robot_explorer] --------- Edge find ---------");
+    //      float omega_sign;
+    //      if (right_edge && (omega_sign = degreeOfPoint(r_it_2)) < 0)
+    //      {
+    //        omega_sign = -1;
+    //      }
+    //      else if (left_edge && (omega_sign = degreeOfPoint(l_it_2)) < 0)
+    //      {
+    //        omega_sign = -1;
+    //      }
+    //      else
+    //      {
+    //        omega_sign = 1;
+    //      }
+    //      msg.angular.z = 0.25 * omega_sign;
+    //    }
 
     // # About doors:
     // ## Door finder ----------------
