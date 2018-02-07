@@ -4,7 +4,6 @@
 
 #include <sensor_msgs/Image.h>
 #include <nav_msgs/Odometry.h>
-// For rand() and RAND_MAX
 
 struct
 {
@@ -23,15 +22,12 @@ void processLaserCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   int n_ranges = msg->ranges.size();
   double nearest = *(std::min_element(msg->ranges.begin(), msg->ranges.end()));
   double farest = *(std::max_element(msg->ranges.begin(), msg->ranges.end()));
-  //  ROS_INFO("[robot_explorer] I've a total of %i measurements to process! Are you ready? Nearest=%.2f Far=%.2f",
-  //           n_ranges, nearest, farest);
   // Cutting fov for accuracy
   float min, max, inc;
   min = (msg->angle_min + 120 * msg->angle_increment);  //
   max = (msg->angle_min + 840 * msg->angle_increment);  //
   inc = msg->angle_increment;                           // 0.25l
 
-  //  ROS_INFO("[robot_explorer] Shorting fov");
   auto beg = msg->ranges.begin();
   auto end = msg->ranges.begin();
   std::advance(beg, 120);
@@ -41,13 +37,7 @@ void processLaserCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   g_laser.max = max;
   g_laser.inc = inc;
   g_laser.ranges = ranges;
-  // Send a message to rosout with the details .
-  //  ROS_INFO("[robot_explorer] min=%.2f, angle_max=%.2f, angle_inc=%.2f", min, max, g_laser.inc);
 };
-void processOdomCallback(const nav_msgs::Odometry::ConstPtr& msg)
-{
-  // auto pose = msg->pose;
-}
 
 float distanceToObsAt(float degree)
 {
@@ -80,9 +70,7 @@ float degreeOfNearPoint(std::vector<float>& ranges)
 int main(int argc, char** argv)
 {
   // Initialize the ROS system and become a node.
-
   ros::init(argc, argv, "exploring");
-
   ROS_INFO("[robot_explorer] Robotic explorer node running and initialized! Let's have some fun!");
 
   ros::NodeHandle nh;
@@ -123,30 +111,26 @@ int main(int argc, char** argv)
     // # About edges:
     // ## Edge finder ----------------
     // ### Right edge
-    auto r_it_1{ g_laser.ranges.begin() };
-    auto r_it_2{ g_laser.ranges.begin() };
-    std::advance(r_it_2, 1);
-    // ROS_INFO("[robot_explorer] Looping for right edges...");
-    while ((*r_it_2 - *r_it_1) < THRESHOLD and std::distance(r_it_2, g_laser.ranges.end()) > 0)
-    {
-      std::advance(r_it_2, 1);
-      std::advance(r_it_1, 1);
-    }
-    bool right_edge{ (*r_it_2 - *r_it_1) >= THRESHOLD and *r_it_1 < THRESHOLD * 2 };
-    // ROS_INFO("[robot_explorer] Looped ---------");
+    //   auto r_it_1{ g_laser.ranges.begin() };
+    //   auto r_it_2{ g_laser.ranges.begin() };
+    //   std::advance(r_it_2, 1);
+    //   while ((*r_it_2 - *r_it_1) < THRESHOLD and std::distance(r_it_2, g_laser.ranges.end()) > 0)
+    //   {
+    //     std::advance(r_it_2, 1);
+    //     std::advance(r_it_1, 1);
+    //   }
+    //   bool right_edge{ (*r_it_2 - *r_it_1) >= THRESHOLD and *r_it_1 < THRESHOLD * 2 };
 
     // ### Left edge
-    auto l_it_1{ g_laser.ranges.end() };
-    auto l_it_2{ g_laser.ranges.end() };
-    std::advance(l_it_2, 1);
-    // ROS_INFO("[robot_explorer] Looping for left edges...");
-    while ((*l_it_1 - *l_it_2) < THRESHOLD and std::distance(l_it_2, g_laser.ranges.end()) > 0)
-    {
-      std::advance(r_it_2, 1);
-      std::advance(r_it_1, 1);
-    }
-    bool left_edge{ (*l_it_1 - *l_it_2) >= THRESHOLD and *r_it_1 < THRESHOLD * 2 };
-    // ROS_INFO("[robot_explorer] Looped ---------");
+    //   auto l_it_1{ g_laser.ranges.end() };
+    //   auto l_it_2{ g_laser.ranges.end() };
+    //   std::advance(l_it_2, -1);
+    //   while ((*l_it_1 - *l_it_2) < THRESHOLD and std::distance(g_laser.ranges.begin(), l_it_2) > 0)
+    //   {
+    //     std::advance(r_it_2, -1);
+    //     std::advance(r_it_1, -1);
+    //   }
+    //   bool left_edge{ (*l_it_1 - *l_it_2) >= THRESHOLD and *r_it_1 < THRESHOLD * 2 };
 
     // ## Edge behaviour ----------------
     //    if (right_edge or left_edge)
@@ -231,6 +215,5 @@ int main(int argc, char** argv)
 
     ros::Time current = ros::Time::now();
     ellapsed_time = (current - begin).toSec();
-    // ROS_INFO("[robot_explorer] Ellpased time: %.2f", ellapsed_time);
   }
 }
